@@ -11,7 +11,6 @@ interface LyricsProps {
 
 export default function SongPlayer({ clipId }: LyricsProps) {
     const [image, setImage] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [likedSongs, setLikedSongs] = useState<string[]>([]);
     const [audioUrl, setAudioUrl] = useState<string>('');
@@ -32,32 +31,31 @@ export default function SongPlayer({ clipId }: LyricsProps) {
                     }
                 });
                 
-                    const clip = response.data.clips[0];
-                    console.log(clip)
-                    setImage(clip.image_url);
-                    setAudioUrl(clip.audio_url);
-                    setIsLiked(clip.is_liked);
-                    setTitle(clip.title);
-                    console.log(clip.title)
-                    console.log(clip.is_liked)
-                    if (clip.audio_url) {
-                        setIsPolling(false);
-                    }
+                const clip = response.data.clips[0];
+                setImage(clip.image_url);
+                setAudioUrl(clip.audio_url);
+                setIsLiked(clip.is_liked);
+                if (clip.audio_url) {
+                    setIsPolling(false);
+                }
             } catch (error) {
                 console.error(error);
             }
         };
-
+        
         const pollForAudioUrl = () => {
             if (isPolling) {
                 fetchClipDetails();
             }
         };
-
-        const intervalId = setInterval(pollForAudioUrl, 5000); // poll every 5 seconds
-
-        return () => clearInterval(intervalId); 
+    
+        const intervalId = setInterval(pollForAudioUrl, 5000);
+    
+        return () => {
+            clearInterval(intervalId);
+        };
     }, [clipId, isPolling]);
+    
 
     const togglePlayPause = () => {
         if (audioRef.current) {
@@ -96,7 +94,6 @@ export default function SongPlayer({ clipId }: LyricsProps) {
             {image && <Image src={image} alt="cover image" width={70} height={70} thumbnail />}
             {audioUrl ? (
                 <>
-                    <p>{title}</p>
                     <audio ref={audioRef} src={audioUrl} hidden />
                         <Button variant="light" onClick={togglePlayPause} style={{margin: '5px'}}>
                         {isPlaying ? <Pause style={{ fontSize: '24px' }} /> : <Play style={{ fontSize: '24px' }} />}
@@ -111,7 +108,7 @@ export default function SongPlayer({ clipId }: LyricsProps) {
             ) : (
                 <p>Loading audio...</p>
             )}
-</div>
+        </div>
         </Container>
 
     );

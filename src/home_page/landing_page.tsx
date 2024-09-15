@@ -16,9 +16,8 @@ export default function LandingPage () {
                 <Col>
                     <Chat updateId={handleClipIdChange} />
                 </Col>
-                    
             </Row>
-            {clipId && <SongPlayer clipId={clipId} />}
+            {clipId && <SongPlayer key={clipId} clipId={clipId} />}
         </Container>
     );
 }

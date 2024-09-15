@@ -27,9 +27,10 @@ export default function Chat({ updateId }: ChatProps) {
             const id = response.data.clips[0].id;
             updateId(id);
         } catch (error) {
-            console.log(error);
+            console.error('Error generating song:', error);
         }
     };
+    
 
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPrompt(e.target.value);
